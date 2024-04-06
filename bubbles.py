@@ -53,13 +53,13 @@ if __name__ == "__main__":
     from random import random, choice
     
     def velocity_setter():
-        return Vec2(random() * 2 - 1, abs(random()))
-    emiter = ParticleEmitter(velocity=velocity_setter, start_color=choice([color.gold, color.orange]), y=.5)
+        return Vec2(random()*.5-random()*.5, abs(random()-.1))
+    def start_color_setter():
+        return choice([color.rgb32(254, 222, 23), color.rgb32(255, 119, 0)])
+    emiter = ParticleEmitter(velocity=velocity_setter, start_color=start_color_setter, y=.5)
 
     def input(key):
         if key == 'p':
-            if not emiter.active:
-                emiter.particle_args["start_color"] = choice([color.gold, color.orange])
             emiter.pause()
 
     EditorCamera()
