@@ -9,7 +9,7 @@ class Particle(Entity):
             start_color = start_color()
         if callable(end_color):
             end_color = end_color()
-        super().__init__(model=Quad(radius=.5), scale=start_scale, color=start_color, unlit=True)
+        super().__init__(model='circle.ursinamesh', scale=start_scale, color=start_color, unlit=True)
         for key, value in kwargs.items():
             try:
                 setattr(self, key, value)
@@ -54,13 +54,13 @@ if __name__ == "__main__":
     
     def velocity_setter():
         return Vec2(random() * 2 - 1, abs(random()))
-    emiter = ParticleEmitter(velocity=velocity_setter, start_color=choice([color.gold, color.orange]), y=.5)
+    emitter = ParticleEmitter(velocity=velocity_setter, start_color=choice([color.gold, color.orange]), y=.5)
 
     def input(key):
         if key == 'p':
-            if not emiter.active:
-                emiter.particle_args["start_color"] = choice([color.gold, color.orange])
-            emiter.pause()
+            if not emitter.active:
+                emitter.particle_args["start_color"] = choice([color.gold, color.orange])
+            emitter.pause()
 
     EditorCamera()
     
