@@ -1,6 +1,6 @@
 # More information
 
-A simple, optimized particle system for the ursina engine.
+A simple particle system for the ursina engine.
 
 # Requirements
 
