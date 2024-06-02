@@ -1,7 +1,7 @@
 from ursina import *
 
 class Particle(Entity):
-    def __init__(self, lifespan=1, velocity=Vec2(0, 0), start_scale=.5, end_scale=1, scale_curve=curve.linear_boomerang, start_color=color.gold, end_color=color.hsv(0,0,.3), color_curve=curve.linear, **kwargs):
+    def __init__(self, lifespan=1, velocity=Vec2(0, 0), start_scale=.5, end_scale=1, scale_curve=curve.linear_boomerang, start_color=color.white, end_color=color.white, color_curve=curve.linear, **kwargs):
         if callable(velocity):
             velocity = velocity()
         self.velocity = velocity
@@ -9,7 +9,7 @@ class Particle(Entity):
             start_color = start_color()
         if callable(end_color):
             end_color = end_color()
-        super().__init__(model='circle.ursinamesh', scale=start_scale, color=start_color, unlit=True)
+        super().__init__(model='quad.ursinamesh', scale=start_scale, color=start_color, unlit=True)
         for key, value in kwargs.items():
             try:
                 setattr(self, key, value)
@@ -23,7 +23,6 @@ class Particle(Entity):
 
     def update(self):
         self.position += self.velocity * time.dt
-        self.look_at(-camera.world_position)
 
 
 class ParticleEmitter(Entity):
@@ -40,7 +39,7 @@ class ParticleEmitter(Entity):
             self.timer += time.dt
             if self.timer >= self.frequency:
                 self.timer = 0
-                self.particles.append(Particle(position=self.world_position, **self.particle_args))
+                self.particles.append(Particle(parent=self, **self.particle_args))
         
     def pause(self):
         self.active = not self.active
@@ -52,14 +51,14 @@ if __name__ == "__main__":
     app = Ursina()
     from random import random, choice
     
+    def start_color_setter():
+        return choice([color.rgb32(254, 222, 23), color.rgb32(255, 119, 0)])
     def velocity_setter():
-        return Vec2(random() * 2 - 1, abs(random()))
-    emitter = ParticleEmitter(velocity=velocity_setter, start_color=choice([color.gold, color.orange]), y=.5)
+        return Vec2(.5*(random()-random()), abs(random()-.1))
+    emitter = ParticleEmitter(texture='radial_gradient.png', start_color=start_color_setter, end_color=Vec4(color.dark_gray[0], color.dark_gray[1], color.dark_gray[2], 0), y=.5, velocity=velocity_setter)
 
     def input(key):
         if key == 'p':
-            if not emitter.active:
-                emitter.particle_args["start_color"] = choice([color.gold, color.orange])
             emitter.pause()
 
     EditorCamera()
